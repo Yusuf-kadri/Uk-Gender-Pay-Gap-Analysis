@@ -1,68 +1,52 @@
-# UK Gender Pay Gap Analysis (2025–26)
+# The UK Gender Pay Gap, 2025 to 2026
 
-**Question:** How large is the gender pay gap across UK employers, and does it differ between sectors or between employers who report on time and those who report late?
+**Question:** How large is the gender pay gap across UK employers, how is it spread, and where in the pay structure does it come from?
 
-All UK employers with 250+ staff must publish their gender pay gap each year. This project cleans that data, explores it visually, and tests whether the differences we see are statistically meaningful.
+Every year, UK employers with 250 or more staff must report the difference between the average hourly pay of their male and female employees. This project analyses the 2025 to 2026 returns in R.
+
+**[Read the full report →](UK-Gender-Pay-Gap-Report.md)**
 
 ---
 
+## Key findings
+
+| | |
+|---|---|
+| **11.5%** | Mean gap in hourly pay across 11,193 employers: men are paid 11.5% more |
+| **85.0%** | Share of employers where men have the higher mean hourly pay |
+| **54.7% → 42.0%** | Women's share of the lowest paid quarter of staff v the highest paid quarter |
+
+- **The typical employer pays men more**, and this is not driven by a few extreme employers. Removing the 138 employers with gaps beyond ±50% barely moves the mean (11.1%).
+- **Women are under-represented in the highest paid jobs.** Their share falls steadily from the lowest to the highest pay quartile, which is what produces a gap in average pay.
+- **Size and sector make little difference.** The average gap is about 10% to 12% in every size band, and the public sector and businesses look better or worse depending on whether the mean or the median is used.
+- **Bonuses:** men and women are about equally likely to get a bonus, but men receive the higher mean bonus at 77.7% of employers that report one.
+
+![Distribution of the pay gap](UK-Gender-Pay-Gap-Report_files/figure-gfm/histogram-zoom-1.png)
+
+![Women's share of each pay quartile](UK-Gender-Pay-Gap-Report_files/figure-gfm/quartiles-plot-1.png)
+
+## What the analysis covers
+
+- **Data checks first:** plotted every employer before averaging, flagged extreme gaps, and checked the late-submission flag against the actual dates (64 "on time" employers submitted after the due date)
+- **Distribution and direction** of the gap
+- **Pay quartiles**, to show where the gap comes from
+- **Employer size and sector**, using an ordered factor for size and missing company numbers to identify the public sector
+- **Bonuses**, including impossible values that rule out a simple average
+- **Reporting behaviour:** late submissions and name changes
+- **Case study:** Vodafone Limited
+- **Limitations:** employer-level data, equal weighting of employers, and why a pay gap is not the same as unequal pay for the same job
+
 ## Data
 
-- **Source:** [UK Government Gender Pay Gap Service](https://gender-pay-gap.service.gov.uk/), 2025–26 reporting year
-- **Size:** 11,193 employer returns
-- **Key variable:** `DiffMeanHourlyPercent`, the percentage difference between men's and women's mean hourly pay
+[UK Government Gender Pay Gap Service](https://gender-pay-gap.service.gov.uk/viewing/download), 2025 to 2026 reporting year. One row per employer, 27 variables. The data file is not included here; download it from the link.
 
-## Approach
+## Reproducing the report
 
-1. **Cleaning** (`readr`, `dplyr`)
-   - Identified public sector employers from blank company numbers
-   - Ordered employer size as a factor
-   - Checked the late-submission flag against the actual submission dates
-2. **Exploration** (`ggplot2`)
-   - Plotted the distribution of the pay gap before any testing
-   - Spotted a data quality issue: some employers' male and female bonus figures sum to exactly 100%, which suggests the form question was misread
-3. **Testing** (`t.test()`)
-   - Is the average gap different from zero?
-   - Public sector v business/charity
-   - Late v on-time reporters
-
-## Findings
-
-| Comparison | Result |
-|---|---|
-| Average gap across all employers | **11.5%** in favour of men, t(11192) = 76.1 |
-| Public sector v business/charity | 10.92% v 11.59%, t(2813) = 2.07, p = .0385 |
-| Late v on-time reporters | 9.93% v 11.60%, t(705.96) = −1.36, p = .176 |
-
-- The gap is clearly above zero.
-- Business and charity employers show a gap about 0.7 percentage points larger than the public sector. The difference is statistically significant, but small.
-- There is no evidence that late reporters have a different gap from on-time reporters.
-
-![Distribution of the gender pay gap](figures/pay-gap-distribution.png)
-*Figure 1. Mean hourly pay gap by employer. Four observations below −100% are omitted.*
-
-![Pay gap by sector](figures/pay-gap-by-sector.png)
-*Figure 2. Pay gap distribution by sector, with group means marked.*
-
-## Repository structure
-
-```
-uk-gender-pay-gap-analysis/
-├── README.md
-├── analysis.Rmd        # full analysis
-├── analysis.md         # knitted output (renders on GitHub)
-├── data/               # or see the link above
-└── figures/
-```
-
-## How to run
-
-Install the packages, then knit `analysis.Rmd`:
-
-```r
-install.packages(c("tidyverse", "knitr"))
-```
+1. Download the 2025 to 2026 file and save it next to the `.Rmd` as `UK Gender Pay Gap Data - 2025 to 2026.csv`
+2. Install the packages: `install.packages(c("tidyverse", "knitr"))`
+3. Knit `UK-Gender-Pay-Gap-Report.Rmd` in RStudio
 
 ## Tools
 
-R · tidyverse (readr, dplyr, ggplot2) · knitr
+R · tidyverse (readr, dplyr, tidyr, ggplot2, lubridate) · knitr
+
